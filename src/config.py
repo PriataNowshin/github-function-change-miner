@@ -7,14 +7,14 @@ from datetime import datetime, timezone
 @dataclass(frozen=True)
 class Settings:
     # Dataset target
-    target_repository_count: int = 20
+    target_repository_count: int = 50
     min_valid_files_per_repo: int = 5
 
     # Output Directory
     output_dir: str = "output"
 
     # Cutoff: ignore anything after this date (inclusive cutoff at end-of-day UTC)
-    cutoff_utc: datetime = datetime(2023, 12, 31, 23, 59, 59, tzinfo=timezone.utc)
+    cutoff_utc: datetime = datetime(2022, 12, 31, 23, 59, 59, tzinfo=timezone.utc)
 
     # Repo discovery (rank by stars desc)
     search_per_page: int = 100
