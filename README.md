@@ -1,8 +1,8 @@
 # GitHub Function Change Miner
 
 Python research data collection pipeline that uses the GitHub REST API to:
-- select 20 public Python repositories (created on or before 2023-12-31, non-archived, non-fork), ranked by stars
-- find at least 5 Python files per repo where the **latest** pre-2024 adjacent commit pair contains an **existing function body change**
+- select 50 public Python repositories (created on or before 2022-12-31, non-archived, non-fork), ranked by stars
+- find at least 5 Python files per repo where the **latest** pre-2023 adjacent commit pair contains an **existing function body change**
 - write JSONL datasets with repository, file, and function-level change records
 
 ## Setup
