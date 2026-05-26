@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 @dataclass(frozen=True)
 class Settings:
     # Dataset target
-    target_repository_count: int = 50
+    target_repository_count: int = 500
     min_valid_files_per_repo: int = 5
 
     # Output Directory
