@@ -15,7 +15,7 @@ from src.records import FileRecord, FunctionRecord
 def run() -> None:
     client = GitHubClient()
 
-    selected: List[Tuple[Dict[str, Any], List[FileRecord], List[FunctionRecord]]] = []
+    selected_repos: List[Tuple[Dict[str, Any], List[FileRecord], List[FunctionRecord]]] = []
 
     print("Searching for candidate repositories...")
     for page in range(1, SETTINGS.max_search_pages + 1):
@@ -25,7 +25,7 @@ def run() -> None:
             break
 
         for item in items:
-            if len(selected) >= SETTINGS.target_repository_count:
+            if len(selected_repos) >= SETTINGS.target_repository_count:
                 break
 
             repo_full_name = item.get("full_name")
@@ -53,15 +53,15 @@ def run() -> None:
             if len(file_records) < SETTINGS.min_valid_files_per_repo:
                 continue
 
-            selected.append((repo, file_records, function_records))
-            print(f"Selected {repo_full_name} ({len(file_records)} valid files). Total selected: {len(selected)}")
+            selected_repos.append((repo, file_records, function_records))
+            print(f"Selected {repo_full_name} ({len(file_records)} valid files). Total selected: {len(selected_repos)}")
 
-        if len(selected) >= SETTINGS.target_repository_count:
+        if len(selected_repos) >= SETTINGS.target_repository_count:
             break
 
-    if len(selected) < SETTINGS.target_repository_count:
+    if len(selected_repos) < SETTINGS.target_repository_count:
         print(
-            f"Only selected {len(selected)} repositories; increase SETTINGS.max_search_pages or relax limits.",
+            f"Only selected {len(selected_repos)} repositories; increase SETTINGS.max_search_pages or relax limits.",
             file=sys.stderr,
         )
 
@@ -70,9 +70,10 @@ def run() -> None:
     funcs_out: List[Dict[str, Any]] = []
 
     # Rank final selection by stars descending
-    selected_sorted = sorted(selected, key=lambda t: int(t[0].get("stargazers_count", 0)), reverse=True)
+    selected_repos_sorted = sorted(selected_repos, key=lambda t: int(t[0].get("stargazers_count", 0)), reverse=True)
 
-    for pos, (repo, file_records, function_records) in enumerate(selected_sorted, start=1):
+    function_id_counter = 1
+    for pos, (repo, file_records, function_records) in enumerate(selected_repos_sorted, start=1):
         repos_out.append(
             {
                 "repo_full_name": repo["full_name"],
@@ -104,6 +105,7 @@ def run() -> None:
         for func in function_records:
             funcs_out.append(
                 {
+                    "id": f"function_{function_id_counter}",
                     "repo_full_name": func.repo_full_name,
                     "file_path": func.file_path,
                     "function_name": func.function_name,
@@ -122,6 +124,8 @@ def run() -> None:
                     "change_type": func.change_type,
                 }
             )
+
+            function_id_counter += 1
 
     output_dir = Path(SETTINGS.output_dir)
     selected_repos_path = output_dir / "selected_repositories.json"
