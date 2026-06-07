@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from src.ast_diff import find_function_body_changes
 from src.config import SETTINGS
 from src.github_client import GitHubApiError, GitHubClient, parse_github_datetime
-from src.jsonl_writer import save_data_as_jsonl
+from src.json_writer import save_data_as_json
 from src.records import FileRecord, FunctionRecord
 
 
@@ -124,13 +124,13 @@ def run() -> None:
             )
 
     output_dir = Path(SETTINGS.output_dir)
-    selected_repos_path = output_dir / "selected_repositories.jsonl"
-    changed_files_path = output_dir / "changed_files.jsonl"
-    changed_functions_path = output_dir / "changed_functions.jsonl"
+    selected_repos_path = output_dir / "selected_repositories.json"
+    changed_files_path = output_dir / "changed_files.json"
+    changed_functions_path = output_dir / "changed_functions.json"
 
-    save_data_as_jsonl(selected_repos_path, repos_out)
-    save_data_as_jsonl(changed_files_path, files_out)
-    save_data_as_jsonl(changed_functions_path, funcs_out)
+    save_data_as_json(selected_repos_path, repos_out)
+    save_data_as_json(changed_files_path, files_out)
+    save_data_as_json(changed_functions_path, funcs_out)
 
     print("Done.")
     print(f"Wrote {selected_repos_path}")
